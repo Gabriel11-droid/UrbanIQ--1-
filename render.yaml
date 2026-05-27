@@ -34,7 +34,7 @@ services:
     name: urbaniq-web
     runtime: static
     rootDir: frontend
-    plan: free
+    
     buildCommand: ""
     staticPublishPath: .
     # Roteia tudo pro index.html (SPA)
