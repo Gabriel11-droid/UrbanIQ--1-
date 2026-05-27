@@ -1,0 +1,48 @@
+# UrbanIQ — Render Blueprint
+# Hospeda frontend (estático) + backend (Node.js) em um clique.
+#
+# Como usar:
+# 1. Suba o projeto no GitHub (https://github.com/seu-usuario/urbaniq)
+# 2. Vá em https://dashboard.render.com/blueprints
+# 3. "New Blueprint Instance" → conecta o repo → Render lê este arquivo
+# 4. Esperá ~3 min e pronto
+
+services:
+  # =========== BACKEND (API) ===========
+  - type: web
+    name: urbaniq-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000           # Render usa porta 10000 internamente
+      - key: CORS_ORIGINS
+        value: "*"             # ajuste depois pro domínio do frontend
+      - key: RATE_LIMIT_PER_MIN
+        value: 240
+      - key: URBANIQ_API_KEY
+        generateValue: true    # Render gera uma chave segura
+
+  # =========== FRONTEND (Static Site) ===========
+  - type: web
+    name: urbaniq-web
+    runtime: static
+    rootDir: frontend
+    plan: free
+    buildCommand: ""
+    staticPublishPath: .
+    # Roteia tudo pro index.html (SPA)
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
