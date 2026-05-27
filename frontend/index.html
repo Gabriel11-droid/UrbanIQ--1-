@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>UrbanIQ — Plataforma Inteligente de Análise Urbana</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- =========== CONFIG ===========
+    Substitua YOUR_GOOGLE_MAPS_API_KEY pela sua chave da Google Maps Platform.
+    Crie em: https://console.cloud.google.com/google/maps-apis
+    Ative "Maps JavaScript API" e restrinja por HTTP referrer.
+    Configure também a URL do backend abaixo (window.__UIQ_API).
+  =================================== -->
+  <script>
+    window.__UIQ_CONFIG = {
+      GOOGLE_MAPS_API_KEY: 'YOUR_GOOGLE_MAPS_API_KEY',
+      // URL do backend Node/Express. Mude para o seu servidor.
+      // Se inacessível, o frontend usa dados mock automaticamente.
+      API_BASE: 'http://localhost:3001/v1'
+    };
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="src/icons.jsx"></script>
+  <script type="text/babel" src="src/data.jsx"></script>
+  <script type="text/babel" src="src/shell.jsx"></script>
+  <script type="text/babel" src="src/views_landing.jsx"></script>
+  <script type="text/babel" src="src/views_explore.jsx"></script>
+  <script type="text/babel" src="src/views_pro.jsx"></script>
+  <script type="text/babel" src="src/app.jsx"></script>
+
+  <!-- Google Maps JS API (carregamento defer, dispatch de evento ao montar) -->
+  <script>
+    (function loadMaps() {
+      var key = window.__UIQ_CONFIG.GOOGLE_MAPS_API_KEY;
+      if (!key || key === 'YOUR_GOOGLE_MAPS_API_KEY') {
+        console.warn('[UrbanIQ] Google Maps API key não configurada. Usando fallback SVG. Edite UrbanIQ.html para adicionar sua chave.');
+        return;
+      }
+      window.__uiqMapsReady = function() {
+        window.dispatchEvent(new Event('uiq:maps-ready'));
+      };
+      var s = document.createElement('script');
+      s.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(key) + '&callback=__uiqMapsReady&libraries=visualization&v=weekly&language=pt-BR&region=BR';
+      s.async = true;
+      s.defer = true;
+      s.onerror = function() { window.dispatchEvent(new Event('uiq:maps-error')); };
+      document.head.appendChild(s);
+    })();
+  </script>
+</body>
+</html>

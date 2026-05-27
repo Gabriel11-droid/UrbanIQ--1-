@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: urbaniq-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      CORS_ORIGINS: "http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080"
+      RATE_LIMIT_PER_MIN: 240
+    ports:
+      - "3001:3001"
+
+  frontend:
+    image: nginx:alpine
+    container_name: urbaniq-web
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro

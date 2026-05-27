@@ -1,0 +1,10 @@
+{
+  "name": "urbaniq-frontend",
+  "version": "1.0.0",
+  "description": "UrbanIQ — Frontend SPA (React via CDN, sem build)",
+  "private": true,
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve . --listen 3000"
+  }
+}
